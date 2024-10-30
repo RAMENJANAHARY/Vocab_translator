@@ -1,8 +1,13 @@
+import os  # Add this import for environment variables
 from flask import Flask, render_template, request
 from googletrans import Translator, LANGUAGES
 
 app = Flask(__name__)
 translator = Translator()
+
+# Retrieve the API key and port from environment variables
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+PORT = int(os.getenv("PORT", 5000))  # Use Render's PORT or default to 5000 for local testing
 
 # Function to handle translations across multiple languages
 def translate(query, source_language):
@@ -86,5 +91,4 @@ def register():
     return "Registration received! Thank you!."
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
-
+    app.run(host='0.0.0.0', port=PORT, debug=True)
