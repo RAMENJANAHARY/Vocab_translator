@@ -6,7 +6,9 @@
     <title>Vocabulary Translator and Daily Lessons</title>
     <style>
         body {
-            background-color: green;
+            background-image: url('/static/images/background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
             color: white;
         }
         h1 {
@@ -141,10 +143,10 @@
     <div class="contacts">
         <h2>Contact Information</h2>
         <ul>
-            <li>📱 WhatsApp: <a href="https://wa.me/261342321536" target="_blank">+261 34 23 215 36</a></li>
-            <li>📞 Phone: <a href="tel:+261326027711">+261 32 60 277 11</a></li>
-            <li>📧 Email: <a href="mailto:ramenjanahary129@gmail.com">ramenjanahary129@gmail.com</a></li>
-            <li>🌐 Facebook: <a href="https://www.facebook.com/daphanehsaa" target="_blank">Daphane Hsaa</a></li>
+            <li>📱 WhatsApp: <a href="https://wa.me/261342321536" target="_blank">{{ contacts.WhatsApp }}</a></li>
+            <li>📞 Phone: <a href="tel:+261326027711">{{ contacts.Phone }}</a></li>
+            <li>📧 Email: <a href="mailto:{{ contacts.Email }}">{{ contacts.Email }}</a></li>
+            <li>🌐 Facebook: <a href="https://www.facebook.com/daphanehsaa" target="_blank">{{ contacts.Facebook }}</a></li>
         </ul>
     </div>
 </body>
