@@ -33,11 +33,11 @@ def translate(query, source_language):
 def index():
     lessons = [
         {
-            "date": "2024-10-30",
-            "malagasy": "Inona ny vaovao?",
-            "english": "What's news?",
-            "examples": ["What's news today?", "Inona ny vaovao androany?"],
-            "notes": "This sentence is useful for greeting people."
+            "date": "2024-11-02",
+            "malagasy": "Manao ahoana ianao?",
+            "english": "How are you?",
+            "examples": ["How are you feeling today?", "Manao ahoana ianao androany?"],
+            "notes": "This phrase is commonly used to inquire about someone’s well-being and is a friendly way to start a conversation."
         }
     ]
 
@@ -62,11 +62,11 @@ def search():
     # Re-render the index.html with the translation results, lessons, and contacts
     lessons = [
         {
-            "date": "2024-10-30",
-            "malagasy": "Inona ny vaovao?",
-            "english": "What's news?",
-            "examples": ["What's news today?", "Inona ny vaovao androany?"],
-            "notes": "This sentence is useful for greeting people."
+            "date": "2024-11-02",
+            "malagasy": "Manao ahoana ianao?",
+            "english": "How are you?",
+            "examples": ["How are you feeling today?", "Manao ahoana ianao androany?"],
+            "notes": "This phrase is commonly used to inquire about someone’s well-being and is a friendly way to start a conversation."
         }
     ]
 
