@@ -7,16 +7,14 @@ from googletrans import Translator, LANGUAGES
 # Initialize Flask app and configuration
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'd1f5bfc4237f4832a1e6b97fdd3a7ef2f63acbc233587de9c9a1a597f6b8f474')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'sqlite:///users.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Load Google API key from environment variable
-GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', 'AIzaSyC_tDHXYvaLgiunnTqivATD4cps_NpxeH8')
+GOOGLE_API_KEY = os.getenv('AIzaSyC_tDHXYvaLgiunnTqivATD4cps_NpxeH8')
 
-# Initialize database
+# Initialize database and Google Translator
 db = SQLAlchemy(app)
-
-# Initialize Google Translator
 translator = Translator()
 
 # Serve the favicon
@@ -53,7 +51,7 @@ def translate(query, source_language):
                 translation = translator.translate(query, src=source_language, dest=lang)
                 results[LANGUAGES[lang].capitalize()] = translation.text
             except Exception as e:
-                print(f"Error translating from {source_language} to {lang}: {e}")
+                app.logger.error(f"Error translating from {source_language} to {lang}: {e}")
                 results[LANGUAGES[lang].capitalize()] = f"Error: {str(e)}"
     return results
 
@@ -64,7 +62,6 @@ def register():
         username = request.form['username']
         password = generate_password_hash(request.form['password'], method='pbkdf2:sha256')
 
-        # Check if user exists
         if User.query.filter_by(username=username).first():
             flash("Username already exists")
             return redirect(url_for('register'))
@@ -79,7 +76,6 @@ def register():
 # User login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # Check if admin (Elys) is logging in automatically
     if 'username' in session and session['username'] == 'Elys':
         flash("Welcome back, Elys!")
         return redirect(url_for('index'))
@@ -88,14 +84,12 @@ def login():
         username = request.form['username']
         password = request.form['password']
         
-        # Check if user is admin (Elys) with the correct password
-        if username == "Elys" and check_password_hash(generate_password_hash("jghd14", method='pbkdf2:sha256'), password):
+        if username == "Elys" and password == "jghd14":
             session['username'] = 'Elys'
-            session['user_id'] = 1  # Assign a unique ID for the admin
+            session['user_id'] = 1
             flash("Login successful!")
             return redirect(url_for('index'))
 
-        # Check if regular user exists
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
@@ -121,7 +115,6 @@ def pay():
         flash("Please log in to access the PayPal payment page.")
         return redirect(url_for('login'))
     
-    # Check if the user is admin (Elys) or not
     if session['username'] == 'Elys':
         flash("Admin does not need to pay.")
         return redirect(url_for('index'))
@@ -131,7 +124,6 @@ def pay():
 # After PayPal payment (simulated for now)
 @app.route('/payment_success')
 def payment_success():
-    # Simulate successful payment by changing user subscription to 'premium'
     if 'user_id' not in session:
         flash("You must be logged in to access this page.")
         return redirect(url_for('login'))
@@ -145,7 +137,6 @@ def payment_success():
 # Define the homepage route
 @app.route('/')
 def index():
-    # Ensure the user is logged in and has access to translations
     if 'user_id' not in session:
         flash("Please log in to access translations.")
         return redirect(url_for('login'))
@@ -155,16 +146,14 @@ def index():
 # Define the search route to handle translation queries
 @app.route('/search', methods=['POST'])
 def search():
-    if 'user_id' not in session:  # Ensure the user is logged in
+    if 'user_id' not in session:
         flash("Please log in to use the translation service.")
         return redirect(url_for('login'))
 
-    # Check if the user is admin (Elys) or a premium user
     if session['username'] == 'Elys' or session['subscription_status'] == 'premium':
         query = request.form['query']
         direction = request.form['direction']
         
-        # Map direction to source language code
         source_language = direction.split('_')[0] if '_' in direction else direction
         results = translate(query, source_language)
 
@@ -172,6 +161,11 @@ def search():
     else:
         flash("You must be a premium user to use the translation service.")
         return redirect(url_for('pay'))
+
+# Privacy Policy route
+@app.route('/privacy-policy')
+def privacy_policy():
+    return render_template('privacy-policy.html')
 
 # Run the app
 if __name__ == '__main__':
