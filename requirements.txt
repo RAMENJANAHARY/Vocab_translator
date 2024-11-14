@@ -29,7 +29,7 @@ google-auth
 google-auth-httplib2
 Google-Images-Search
 googleapis-common-protos
-googletrans
+googletrans==4.0.0-rc1
 greenlet
 gunicorn
 h11
