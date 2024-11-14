@@ -167,6 +167,10 @@ def search():
 def privacy_policy():
     return render_template('privacy-policy.html')
 
+@app.route('/terms-of-use')
+def terms_of_use():
+    return render_template('terms-of-use.html')
+
 # Run the app
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
