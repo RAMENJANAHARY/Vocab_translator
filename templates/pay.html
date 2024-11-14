@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Payment - Premium Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .payment-info {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .payment-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #0070ba;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        .payment-button:hover {
+            background-color: #005a8b;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+        .footer a {
+            color: #0070ba;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Premium Translation Service</h1>
+</header>
+
+<div class="container">
+    <h2>Get Premium Access to Translation Services</h2>
+    <div class="payment-info">
+        <p>Welcome! To unlock premium translation features, please make a payment below.</p>
+        <p>As a premium user, you will get access to unlimited translations, faster processing, and priority support.</p>
+        <p>The cost for the premium subscription is <strong>$9.99/month</strong>.</p>
+    </div>
+
+    <!-- PayPal Payment Button (using PayPal's standard button integration) -->
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+    <input type="hidden" name="cmd" value="_xclick">
+    <input type="hidden" name="business" value="ramenjanahary129@gmail.com">
+    <input type="hidden" name="item_name" value="Premium Translation Service">
+    <input type="hidden" name="amount" value="9.99">
+    <input type="hidden" name="currency_code" value="USD">
+    <input type="hidden" name="return" value="https://vocab-website.onrender.com/payment_success">
+    <input type="hidden" name="cancel_return" value="https://vocab-website.onrender.com/payment_cancelled">
+    
+    <button type="submit" class="payment-button">
+        Pay with PayPal
+    </button>
+</form>
+    
+    <p class="payment-info">Click the button above to securely pay with PayPal.</p>
+</div>
+
+<div class="footer">
+    <p>&copy; 2024 Your Website | <a href="http://yourwebsite.com/privacy-policy">Privacy Policy</a> | <a href="http://yourwebsite.com/terms-of-service">Terms of Service</a></p>
+</div>
+
+</body>
+</html>

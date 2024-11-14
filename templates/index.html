@@ -3,170 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vocabulary Translator and Daily Lessons</title>
+    <title>Translate</title>
     <style>
         body {
-            background-image: url('/static/images/background.jpg');
+            font-family: Arial, sans-serif;
+            background-image: url("static/images/background.jpg");
             background-size: cover;
-            background-repeat: no-repeat;
-            color: white;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
         }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Dark overlay for text readability */
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #333;
+            margin: 0 0 15px;
+        }
+
         h1 {
-            text-align: center;
+            font-size: 28px;
         }
+
+        h2 {
+            font-size: 20px;
+            font-weight: normal;
+            color: #666;
+        }
+
         form {
-            text-align: center;
-            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
-        input[type="text"], input[type="email"], input[type="submit"] {
-            padding: 8px;
-            width: 300px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            display: block;
-            margin: 10px auto;
-        }
-        select, button {
-            padding: 8px;
-            margin-left: 30px;
-            border-radius: 5px;
-        }
-        .lesson, .publicity, .registration {
-            margin: 15px;
-            padding: 15px;
-            background-color: #444;
-            border-radius: 10px;
-            display: inline-block;
-            width: 80%;
-            vertical-align: top;
-        }
-        .lesson h2, .lesson p, .registration h2, .registration p {
-            text-align: center;
-        }
-        hr {
-            border: 1px solid white;
-        }
-        .contacts, .qa-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .contacts ul {
-            list-style-type: none;
-        }
-        .contacts li {
-            margin: 10px 0;
-        }
-        a {
-            color: white;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .qa-link a {
-            display: inline-block;
-            padding: 15px;
-            background-color: #0066cc;
-            color: white;
-            border-radius: 5px;
+
+        label {
             font-weight: bold;
-            text-decoration: none;
+            color: #444;
+            text-align: left;
         }
-        .qa-link a:hover {
-            background-color: #004d99;
+
+        input[type="text"], select {
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button[type="submit"], .logout-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover, .logout-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .flash-messages {
+            list-style: none;
+            padding: 10px;
+            margin: 0 0 20px;
+            background-color: #ffeb3b;
+            color: #d32f2f;
+            border-radius: 4px;
+            text-align: left;
+        }
+
+        .flash-messages li {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .flash-messages li:last-child {
+            border-bottom: none;
+        }
+
+        .logout-btn {
+            margin-top: 20px;
+            text-decoration: none;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
-    <!-- Vocabulary Translator Section -->
-    <div>
-        <h1>Vocabulary Translator</h1>
+    <div class="container">
+        <h1>Welcome {{ session['username'] }}</h1>
+        <h2>Translation Service</h2>
+        
+        <!-- Flash message display -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
 
-        <form method="POST" action="/search">
-            <input type="text" name="query" placeholder="Enter word to translate" required>
-            <label for="direction">Translate:</label>
-            <select id="direction" name="direction">
-                <option value="mg_to_others">Malagasy to English, Spanish, German, Dutch, Italian</option>
-                <option value="en_to_others">English to Malagasy, Spanish, German, Dutch, Italian</option>
-                <option value="es_to_others">Spanish to English, Malagasy, German, Dutch, Italian</option>
-                <option value="de_to_others">German to Malagasy, English, Spanish, Dutch, Italian</option>
-                <option value="nl_to_others">Dutch to Malagasy, English, Spanish, German, Italian</option>
-                <option value="it_to_others">Italian to Malagasy, English, Spanish, German, Dutch</option>
+        <!-- Translate Form -->
+        <form action="{{ url_for('search') }}" method="POST">
+            <label for="query">Enter text to translate:</label>
+            <input type="text" name="query" required>
+            
+            <label for="direction">Select language direction:</label>
+            <select name="direction" required>
+                <!-- Malagasy to other languages -->
+                <option value="mg_en">Malagasy to English</option>
+                <option value="mg_es">Malagasy to Spanish</option>
+                <option value="mg_de">Malagasy to German</option>
+                <option value="mg_nl">Malagasy to Dutch</option>
+                <option value="mg_it">Malagasy to Italian</option>
+
+                <!-- English to other languages -->
+                <option value="en_mg">English to Malagasy</option>
+                <option value="en_es">English to Spanish</option>
+                <option value="en_de">English to German</option>
+                <option value="en_nl">English to Dutch</option>
+                <option value="en_it">English to Italian</option>
+
+                <!-- Spanish to other languages -->
+                <option value="es_en">Spanish to English</option>
+                <option value="es_mg">Spanish to Malagasy</option>
+                <option value="es_de">Spanish to German</option>
+                <option value="es_nl">Spanish to Dutch</option>
+                <option value="es_it">Spanish to Italian</option>
+
+                <!-- German to other languages -->
+                <option value="de_mg">German to Malagasy</option>
+                <option value="de_en">German to English</option>
+                <option value="de_es">German to Spanish</option>
+                <option value="de_nl">German to Dutch</option>
+                <option value="de_it">German to Italian</option>
+
+                <!-- Dutch to other languages -->
+                <option value="nl_mg">Dutch to Malagasy</option>
+                <option value="nl_en">Dutch to English</option>
+                <option value="nl_es">Dutch to Spanish</option>
+                <option value="nl_de">Dutch to German</option>
+                <option value="nl_it">Dutch to Italian</option>
+
+                <!-- Italian to other languages -->
+                <option value="it_mg">Italian to Malagasy</option>
+                <option value="it_en">Italian to English</option>
+                <option value="it_es">Italian to Spanish</option>
+                <option value="it_de">Italian to German</option>
+                <option value="it_nl">Italian to Dutch</option>
             </select>
+            
             <button type="submit">Translate</button>
         </form>
 
         {% if results %}
-            <div style="text-align: center; margin-top: 20px;">
-                <h2>Translation Results:</h2>
-                <ul>
-                    {% for language, translation in results.items() %}
-                        <li><strong>{{ language }}:</strong> {{ translation }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
+            <h3>Translation Results:</h3>
+            <ul>
+                {% for language, translation in results.items() %}
+                    <li><strong>{{ language }}:</strong> {{ translation }}</li>
+                {% endfor %}
+            </ul>
         {% endif %}
-    </div>
-    <hr>
 
-    <!-- Daily Lessons and Registration Section -->
-    <div>
-        <!-- Daily Lessons -->
-        <div class="lesson">
-            <h1>Daily Malagasy to English Lesson with Arthur</h1>
-            {% for lesson in lessons %}
-                <div>
-                    <h2>Date: {{ lesson.date }}</h2>
-                    <p><strong>Malagasy Sentence:</strong> {{ lesson.malagasy }}</p>
-                    <p><strong>English Translation:</strong> {{ lesson.english }}</p>
-                    <h3>Example Usage:</h3>
-                    <ul>
-                        {% for example in lesson.examples %}
-                            <li>{{ example }}</li>
-                        {% endfor %}
-                    </ul>
-                    <h3>Notes:</h3>
-                    <p>{{ lesson.notes }}</p>
-                </div>
-                <hr>
-            {% endfor %}
-        </div>
-
-        <!-- Publicity Section -->
-        <div class="publicity">
-            <h2>Don't Miss Out!</h2>
-            <p>Sign up now and access more daily lessons. Enjoy unlimited vocabulary translations and exclusive content tailored for language learners.</p>
-            <p><strong>Special Offer:</strong> Free access for the first 100 registrants!</p>
-        </div>
-
-        <!-- Registration Form Section -->
-        <div class="registration">
-            <h2>Register Here</h2>
-            <form method="POST" action="/register">
-                <input type="text" name="name" placeholder="Name" required>
-                <input type="text" name="surname" placeholder="Surname" required>
-                <input type="email" name="email" placeholder="Email address" required>
-                <input type="submit" value="Send">
-            </form>
-        </div>
-    </div>
-
-    <!-- Q&A Website Link Section -->
-    <div class="qa-link">
-        <h2>Explore More Q&A Discussions!</h2>
-        <p>Get inspired and join engaging discussions to expand your knowledge. Click the link below to visit our Q&A platform:</p>
-        <a href="https://q-and-a-website.onrender.com" target="_blank">Visit the Q&A Website</a>
-    </div>
-
-    <!-- Contact Information Section -->
-    <div class="contacts">
-        <h2>Contact Information</h2>
-        <ul>
-            <li>📱 WhatsApp: <a href="https://wa.me/261342321536" target="_blank">{{ contacts.WhatsApp }}</a></li>
-            <li>📞 Phone: <a href="tel:+261326027711">{{ contacts.Phone }}</a></li>
-            <li>📧 Email: <a href="mailto:{{ contacts.Email }}">{{ contacts.Email }}</a></li>
-            <li>🌐 Facebook: <a href="https://www.facebook.com/daphanehsaa" target="_blank">{{ contacts.Facebook }}</a></li>
-        </ul>
+        <!-- Logout Button -->
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
     </div>
 </body>
 </html>
