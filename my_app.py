@@ -167,9 +167,9 @@ def search():
 def privacy_policy():
     return render_template('privacy-policy.html')
 
-@app.route('/terms-of-use')
-def terms_of_use():
-    return render_template('terms-of-use.html')
+@app.route('/terms-of-service')
+def terms_of_service():
+    return render_template('terms-of-service.html')
 
 # Run the app
 if __name__ == '__main__':
