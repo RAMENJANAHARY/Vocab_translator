@@ -171,6 +171,10 @@ def privacy_policy():
 def terms_of_service():
     return render_template('terms-of-service.html')
 
+@app.route('/multilingual')
+def multilingual():
+    return render_template('multilingual.html')
+
 # Run the app
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
